@@ -9,7 +9,7 @@ struct ValueArray {
 	int count;
 	Value* values;
 
-	ValueArray() :values(nullptr), capacity(), count(0) {}
+	ValueArray() :values(nullptr), capacity(0), count(0) {}
 	ValueArray(const Value& value);
 	~ValueArray();
 

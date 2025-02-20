@@ -23,7 +23,8 @@ void disassembleChunk(Chunk<T>* chunk, const char* name)
 {
 	// Print a little header
 	std::cout << "== " << name << " ==" << std::endl;
-	for (int offset = 0; offset < chunk->count;) {
+	int sz = chunk->code.size();
+	for (int offset = 0; offset < sz;) {
 		offset = disassembleInstruction(chunk, offset);
 	}
 }
@@ -34,13 +35,17 @@ int disassembleInstruction(Chunk<T>* chunk, int offset)
 {
 	// Print the byte offset of the given instruction
 	printf("%04d ", offset);
-	if (offset > 0 &&
-		chunk->lines[offset] == chunk->lines[offset - 1]) {
-		printf("   | ");
+
+	// »ñÈ¡ÐÐºÅ
+	int line = chunk->getLine(offset);
+
+	if (offset > 0 && line == chunk->getLine(offset - 1)) {
+		printf("  | ");
 	}
 	else {
-		printf("%4d ", chunk->lines[offset]);
+		std::cout << line<<" ";
 	}
+
 	// Read a single byte from the byte code at the given offset
 	uint8_t instruction = chunk->code[offset];
 	switch (instruction) {
@@ -54,5 +59,6 @@ int disassembleInstruction(Chunk<T>* chunk, int offset)
 	}
 	return 0;
 }
+
 
 

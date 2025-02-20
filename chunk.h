@@ -2,7 +2,7 @@
 #include "common.h"
 #include "value.h"
 #include <iostream>
-#include <unordered_set>
+#include <vector>
 
 
 enum OpCode {
@@ -10,34 +10,45 @@ enum OpCode {
 	OP_CONSTANT,
 }; 
 
+//Run-Length Encoding
+struct LineInfo {
+	int index;       //对应的字节码起始索引
+	int lineNumber;  //行号
+
+	bool operator==(const LineInfo& right) {
+		return index == right.index && lineNumber == right.lineNumber;
+	}
+	friend std::ostream& operator<<(std::ostream& os, const LineInfo& lineInfo) {
+		os << lineInfo.index << " " << lineInfo.lineNumber << std::endl;
+		return os;
+	}
+};
 
 template<class T = double>
 struct Chunk {
-	int count;
-	int capacity;
-	uint8_t* code;
-	int* lines;                                                                                                      
+	std::vector<uint8_t> code;
+	std::vector<LineInfo> lines;                                                                                                      
 	ValueArray<T> constants;
 	                                 
-	Chunk() :count(0), capacity(0), code(nullptr),lines(nullptr) {}
-	~Chunk();
+	Chunk() = default;
+	~Chunk() = default;
 
-	void init();
 	void writeChunk(uint8_t byte, int lines);
 	int addConstant(const T& value);
+	int getLine(int instructionIndex) const;
 
 	/*functions for testing*/
 	void printCode(){
 		std::cout << "code: ";
-		for (int i = 0; i < count; ++i) {
-			std::cout  << code[i] << " ";
+		for (const auto& it : code) {
+			std::cout  << it << " ";
 		}
 		std::cout << std::endl;
 	}
 	void printLines() {
 		std::cout << "lines: ";
-		for (int i = 0; i < count; ++i) {
-			std::cout << code[i] << " ";
+		for (const auto& it:lines) {
+			std::cout << it << " ";
 		}
 		std::cout << std::endl;
 	}
@@ -53,35 +64,29 @@ int Chunk<T>::addConstant(const T& value)
 	return constants.decCount();
 }
 
-template<class T /*= double*/>
-Chunk<T>::~Chunk()
-{
-	FREE_ARRAY(uint8_t, code, capacity);
-	FREE_ARRAY(int, lines, capacity);
-	init();
-}
-
-template<class T /*= double*/>
-void Chunk<T>::init()
-{
-	count = 0;
-	capacity = 0;
-	code = nullptr;
-	lines = nullptr;
-}
 
 template<class T /*= double*/>
 void Chunk<T>::writeChunk(uint8_t byte, int line)
 {
-	if (capacity < count + 1) {
-		int oldCapacity = capacity;
-		capacity = GROW_CAPACITY(oldCapacity);
-		code = GROW_ARRAY(uint8_t, code,
-			oldCapacity, capacity);
-		lines = GROW_ARRAY(int, lines,
-			oldCapacity, capacity);
+	code.push_back(byte);
+	if (lines.empty() || lines.back().lineNumber != line) {
+		lines.push_back(LineInfo({static_cast<int>(code.size())-1,line}));
 	}
-	code[count] = byte;
-	lines[count] = line;
-	count++;
+}
+
+// 使用二分查找查找行号
+template<class T>
+int Chunk<T>::getLine(int instructionIndex) const {
+	if (lines.empty()) return -1;
+	int left = 0, right = static_cast<int>(lines.size()) - 1;
+	while (left < right) {
+		int mid = (left + right + 1) / 2;
+		if (lines[mid].index <= instructionIndex) {
+			left = mid;
+		}
+		else {
+			right = mid - 1;
+		}
+	}
+	return lines[left].lineNumber;
 }
