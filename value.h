@@ -1,77 +1,37 @@
 #pragma once
 
-#include "memory.h"
 #include <iostream>
+#include <vector>
 
-template <class Value = double >
+template <class Value = double>
 struct ValueArray {
-	int capacity;
-	int count;
-	Value* values;
+	std::vector<Value> values;  // 使用 std::vector 自动管理内存
 
-	ValueArray() :values(nullptr), capacity(0), count(0) {}
-	ValueArray(const Value& value);
-	~ValueArray();
+	ValueArray() = default;
+	ValueArray(const Value& value) { addValue(value); }
+	~ValueArray() = default;
 
-	void init();
-	void addValue(const Value& value);
-	int decCount();
-	void printValue(const Value& value);
-
-	friend std::ostream& operator<< (std::ostream& os,const ValueArray<Value>& valueArray);
-};
-
-template <class Value /*= double */>
-void ValueArray<Value>::printValue(const Value& value)
-{
-	std::cout << value;
-}
-
-template <class Value /*= double */>
-int ValueArray<Value>::decCount()
-{
-	return --count;
-}
-
-template <class Value /*= double */>
-void ValueArray<Value>::addValue(const Value& value)
-{
-	if (capacity < count + 1) {
-		int oldCapacity = capacity;
-		capacity = GROW_CAPACITY(oldCapacity);
-		values = GROW_ARRAY(Value, values, oldCapacity, capacity);
+	void addValue(const Value& value) {
+		values.push_back(value); 
 	}
-	values[count] = value;
-	count++;
-}
 
-template<class Value /*= double */>
-ValueArray<Value>::ValueArray(const Value& value) :ValueArray() {
-	addValue(value);
-}
+	void printValue(const Value& value) const {
+		std::cout << value;
+	}
 
-template <class Value /*= double */>
-ValueArray<Value>::~ValueArray()
-{
-	FREE_ARRAY(Value, values, capacity);
-	init();
-}
+	int decValue() {
+		if (values.empty()) return -1;  
+		values.pop_back();
+		return values.size();
+	}
 
-template<class Value>
-void ValueArray<Value>::init() {
-	capacity = 0;
-	count = 0;
-	values = nullptr;
-}
-
-
-template <class Value /*= double */>
- std::ostream& operator<< (std::ostream& os,const ValueArray<Value>& valueArray){
-	 os << "capacity: " << valueArray.capacity << std::endl;
-	 os << "count: " <<  valueArray.count << std::endl;
-	 os << "values";
-	 for (auto it : valueArray.values) {
-		 os << it << "  ";
-	 }
-	 os << std::endl;
-}
+	friend std::ostream& operator<<(std::ostream& os, const ValueArray<Value>& valueArray) {
+		os << "count: " << valueArray.values.size() << std::endl;  // 使用 vector 的 size()
+		os << "values: ";
+		for (const auto& val : valueArray.values) {
+			os << val << "  ";
+		}
+		os << std::endl;
+		return os;
+	}
+};
