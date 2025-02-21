@@ -27,6 +27,9 @@
     <ClCompile Include="value.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="vm.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common.h">
@@ -42,6 +45,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="value.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="vm.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

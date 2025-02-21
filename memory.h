@@ -8,3 +8,13 @@
 #define FREE_ARRAY(type,pointer,oldCount) \
    reallocate(pointer,sizeof(type) * (oldCount),0)
 void* reallocate(void* pointer, size_t oldSize, size_t newSize);
+
+// An allocator remained to finish...
+namespace Memory {
+	class Pool {
+
+	};
+	class MyAllocator {
+
+	};
+}

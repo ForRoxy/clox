@@ -63,6 +63,11 @@ struct Chunk {
 	void printConstants() {
 		std::cout << constants << std::endl;
 	}
+
+	// 获取原始指针
+	uint8_t* getCodePtr() { return code.data(); }
+	uint8_t* getCodeEnd() { return code.data() + code.size(); }
+
 };
 
 template<class T /*= double*/>
