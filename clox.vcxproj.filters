@@ -15,40 +15,43 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp">
+    <ClCompile Include="src\main.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="common.cpp">
+    <ClCompile Include="src\common.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="memory.cpp">
+    <ClCompile Include="src\memory.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="value.cpp">
+    <ClCompile Include="src\value.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="vm.cpp">
+    <ClCompile Include="src\vm.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="common.h">
+    <ClInclude Include="include\chunk.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="chunk.h">
+    <ClInclude Include="include\debug.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="memory.h">
+    <ClInclude Include="include\common.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="debug.h">
+    <ClInclude Include="include\memory.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="value.h">
+    <ClInclude Include="include\value.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="vm.h">
+    <ClInclude Include="include\vm.h">
       <Filter>头文件</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="CMakeLists.txt" />
   </ItemGroup>
 </Project>
